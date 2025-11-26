@@ -36,8 +36,8 @@ print("Mongo connected successfully")
 # Seed users once
 if users.count_documents({}) == 0:
     users.insert_many([
-        {"email": "citizen@manuals", "password": "1234", "role": "citizen"},
-        {"email": "hospital@manuals", "password": "9999", "role": "hospital"},
+        {"email": "citizen@test.com", "password": "1234", "role": "citizen"},
+        {"email": "hospital@test.com", "password": "9999", "role": "hospital"},
     ])
     print("Users seeded")
 
