@@ -1,0 +1,26 @@
+python3 -m venv venv
+source venv/bin/activate
+pip install fastapi uvicorn pymongo python-dotenv requests
+
+
+npm create vite@latest
+Choose:
+
+Project name: frontend
+
+Framework: React
+
+Variant: TypeScript
+
+Then run:
+
+cd frontend
+npm install
+
+npm install axios
+npm install react-router-dom
+
+npm install leaflet react-leaflet
+npm install --save-dev @types/leaflet
+pip install google-generativeai
+python3 -m pip install google-generativeai

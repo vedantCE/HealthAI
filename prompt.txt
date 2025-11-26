@@ -1,0 +1,944 @@
+FINAL BACKEND PROMPT — LIVE LOCATION WEATHER + CLINIC FINDER
+
+Build the backend code using FastAPI exactly as described below.  
+Write clean, readable, well-structured code and include **necessary comments** explaining how each part works.  
+The goal is to build:
+
+1. A weather API using live GPS coordinates (lat + lon)
+2. A clinic locator API using live GPS coordinates (lat + lon)
+3. Proper folder structure
+4. Console logs everywhere for debugging
+
+DO NOT add any extra features beyond this.
+
+========================================================
+PROJECT NAME: SurgeSense — Live Location Services Backend
+========================================================
+
+TECH STACK:
+- FastAPI
+- Python
+- Requests
+- python-dotenv
+- MongoDB Atlas already connected earlier (no need to modify)
+- Clean console logging
+- Necessary comments explaining each function & logic
+
+========================================================
+FOLDER STRUCTURE (must follow this)
+========================================================
+
+backend/
+    app.py
+    utils/
+        weather_api.py
+        location_api.py
+
+========================================================
+REQUIREMENTS
+========================================================
+
+1. WEATHER API (OpenWeather)
+   - Input: latitude & longitude
+   - Return:
+       temperature
+       humidity
+       weather description
+   - Use:
+       https://api.openweathermap.org/data/2.5/weather?lat=LAT&lon=LON
+   - API key from .env (OPENWEATHER_API_KEY)
+   - Add console prints:
+       “Weather API call started”
+       “Weather fetched successfully”
+       “Weather error: …”
+
+2. CLINIC LOCATION API (OpenStreetMap Nominatim)
+   - Input: latitude & longitude
+   - Return: list of nearby 10 clinics with:
+       name
+       lat
+       lon
+       address
+   - Use:
+       https://nominatim.openstreetmap.org/search
+   - Add console prints:
+       “Clinic search started…”
+       “Clinics found: X”
+       “Clinic API error: …”
+   - Use custom User-Agent header (required by Nominatim)
+
+3. ENDPOINTS
+   - GET /weather?lat=XX&lon=YY
+   - GET /clinics?lat=XX&lon=YY
+
+   Weather endpoint behavior:
+   - call get_weather(lat, lon)
+   - return JSON { success: true, weather: {…} }
+   - if failed → { success: false }
+
+   Clinics endpoint behavior:
+   - call find_nearby_clinics(lat, lon)
+   - return JSON { success: true, clinics: [ … ] }
+
+4. CODE COMMENTS
+   Add necessary comments explaining:
+   - why we use coordinates
+   - how URL is formed
+   - what response we extract
+   - how Nominatim viewbox works
+   - why User-Agent is required
+   - how FastAPI parameters work
+
+========================================================
+WRITE THE CODE NOW:
+========================================================
+
+1. Create utils/weather_api.py
+   - Include detailed comments + print logs
+
+2. Create utils/location_api.py
+   - Include detailed comments + print logs
+
+3. Modify app.py to add:
+   - import statements
+   - /weather endpoint
+   - /clinics endpoint
+   - clean comments for each
+
+The final output should be clean, minimal, production-ready FastAPI code with clear comments.
+
+Overpass API for Nearby Clinics (with Comments)
+Build a FastAPI backend module that fetches nearby clinics, hospitals, and pharmacies 
+using the Overpass API, based on live user location (latitude + longitude).
+
+Include detailed, beginner-friendly comments explaining:
+- how Overpass works
+- how the query is built
+- how lat/lon radius search works
+- why we filter amenity types
+- how FastAPI endpoints handle query parameters
+- how to return clean JSON
+
+==========================
+FOLDER STRUCTURE REQUIRED
+==========================
+backend/
+   app.py
+   utils/
+       overpass_api.py
+
+==========================
+REQUIREMENTS
+==========================
+
+1️⃣ OVERPASS API functionality  
+Create utils/overpass_api.py with a function:
+
+    find_medical_places(lat, lon)
+
+This function should:
+- log all steps with print statements
+- send a POST request to Overpass API endpoint:
+      https://overpass-api.de/api/interpreter
+- build an Overpass QL query that searches within 1500m radius for:
+      amenity=clinic
+      amenity=hospital
+      amenity=pharmacy
+- return a clean list of:
+      name
+      latitude
+      longitude
+      amenity type
+      address (if available)
+
+Use comments to explain:
+- the Overpass query
+- meaning of "around:1500"
+- meaning of amenity filters
+
+2️⃣ FASTAPI ENDPOINT
+Create a GET endpoint:
+
+    GET /nearby-medical?lat=XX&lon=YY
+
+This should:
+- print logs for debugging
+- validate input
+- call find_medical_places()
+- return proper JSON:
+      { "success": true, "places": [ ... ] }
+
+3️⃣ CODE QUALITY REQUIREMENTS
+- Clean, readable code
+- Add necessary comments for learning
+- Handle errors safely
+- Never return raw Overpass response
+- Return only safe structured JSON
+
+==========================
+WRITE FULL CODE NOW:
+==========================
+- utils/overpass_api.py
+- updated app.py (only endpoint-related changes)
+
+
+<---------------------------------------------------------------------------------------------------------------->
+<---------------------------------------------------------------------------------------------------------------->
+
+
+FINAL PROFESSIONAL MAPBOX FRONTEND PROMPT
+Build a complete Mapbox implementation for my React + TypeScript frontend for SurgeSense.
+
+This Mapbox map must:
+1. Show the USER'S LIVE LOCATION (lat/lon using browser geolocation)
+2. Show NEARBY MEDICAL PLACES returned from my backend:
+       GET /nearby-medical?lat=xx&lon=yy
+
+   Backend returns:
+       [
+         { name, lat, lon, amenity, address }
+       ]
+
+3. Render Mapbox markers for:
+       - Clinics (blue marker)
+       - Hospitals (red marker)
+       - Pharmacies (green marker)
+
+4. Clicking a marker opens a popup showing:
+       - name
+       - amenity type
+       - address (if available)
+
+5. Map must auto-center and zoom to user location.
+
+6. Map must be responsive and clean, using a professional UI style.
+
+========================================================
+FRONTEND STACK REQUIREMENTS
+========================================================
+- React + TypeScript
+- components/MapView.tsx
+- axios for API calls
+- mapbox-gl for map rendering
+
+========================================================
+MAPBOX SETUP REQUIREMENTS
+========================================================
+
+Instructions inside code:
+- import “mapbox-gl/dist/mapbox-gl.css”
+- use an environment variable: import.meta.env.VITE_MAPBOX_TOKEN
+- include necessary comments explaining:
+      how Mapbox works,
+      how to initialize the map,
+      how markers are made,
+      how to set center and zoom,
+      how popups work
+
+========================================================
+FULL FUNCTIONAL REQUIREMENTS
+========================================================
+
+1️⃣ Create a component:
+    src/components/MapView.tsx
+
+2️⃣ Inside it:
+   - On mount:
+       navigator.geolocation.getCurrentPosition()
+       save lat/lon to state
+       initialize Mapbox map with center = user location
+   - Call backend:
+       GET /nearby-medical?lat=${lat}&lon=${lon}
+       log response with console.log
+
+   - Add markers for every location:
+       Hospital -> red marker
+       Clinic -> blue marker
+       Pharmacy -> green marker
+
+   - Add popup on click showing:
+        place.name
+        place.amenity
+        place.address
+
+   - Add comments:
+
+       // 1. Initialize the Mapbox map
+       // 2. Add user location marker
+       // 3. Fetch clinics from backend
+       // 4. Loop and place markers
+       // 5. Add popups
+       // 6. Cleanup map on unmount
+
+3️⃣ Return full working TypeScript component code.
+
+4️⃣ Add necessary import statements at top.
+
+========================================================
+DELIVERABLE:
+========================================================
+
+Write ONLY the following:
+
+✔ Full code for components/MapView.tsx  
+✔ Code must be 100% working  
+✔ Include readable, beginner-friendly comments  
+✔ Use functional React (hooks: useState, useEffect)  
+✔ No extra UI libraries  
+✔ Clean spacing and formatting  
+
+========================================================
+NOW GENERATE THE FULL CODE.
+
+<---------------------------------------------------------------------------------------------------------------->
+<---------------------------------------------------------------------------------------------------------------->
+
+
+PROMPT — Integrate MapView into CitizenDashboard
+Integrate my Mapbox component (MapView.tsx) into the CitizenDashboard page.
+
+REQUIREMENTS:
+-----------------------------------------
+1. Create a professional CitizenDashboard layout:
+   - Top heading: “Citizen Dashboard”
+   - Sub-heading: “Your Location & Nearby Medical Facilities”
+   - Show live user location (lat, lon) on top in small text
+   - Show MapView component below the heading
+   - Use a clean, modern card layout (white card, grey background)
+   - Add proper spacing (24px), clean margins, modern styling
+
+2. Use React + TypeScript only (no other UI libraries).
+
+3. CitizenDashboard.tsx should:
+   - Import MapView component
+   - Use MapView inside a card container
+   - Pass NO props (MapView handles its own geolocation + API requests)
+   - Include clear comments explaining each part
+   - Use a simple layout:
+         <div className="dashboard-container">
+            <h1>Citizen Dashboard</h1>
+            <p>Your live location is shown below</p>
+            <MapView />
+         </div>
+
+4. Add basic CSS styling inside the component using inline styles OR a small CSS module:
+   - Background: #f5f5f5
+   - Card with white background + padding + borderRadius + shadow
+   - Full width map card
+   - Map height must be fixed (e.g., 500px)
+
+5. The final output should be ONLY:
+   - Full code for pages/CitizenDashboard.tsx
+   - With all comments required for learning
+   - Clean, readable, production-ready code
+
+
+<---------------------------------------------------------------------------------------------------------------->
+<---------------------------------------------------------------------------------------------------------------->
+
+
+I want to REMOVE MAPBOX COMPLETELY from my project.
+
+Instead, build a fully working MapLibre GL JS map component in React + TypeScript.
+
+Replace Mapbox With MapLibre + Build MapView Component:::::
+==============================================
+REQUIREMENTS — REMOVE MAPBOX COMPLETELY
+==============================================
+1. Do NOT use Mapbox.
+2. Remove any Mapbox dependencies, CSS imports, tokens, or SDK usage.
+3. Use MapLibre GL JS:
+      import maplibregl from "maplibre-gl";
+      import "maplibre-gl/dist/maplibre-gl.css";
+
+4. Use OpenStreetMap tiles instead of Mapbox tiles:
+      https://tile.openstreetmap.org/{z}/{x}/{y}.png
+
+==============================================
+FEATURE REQUIREMENTS — NEW MAPVIEW COMPONENT
+==============================================
+Create a new component:
+    src/components/MapView.tsx
+
+Functionalities:
+1. Get user's live GPS location using navigator.geolocation.
+2. Initialize MapLibre map centered on user location.
+3. Add a user location marker (blue).
+4. Call backend:
+      GET /nearby-medical?lat=xx&lon=yy
+   Backend returns:
+      [{ name, lat, lon, amenity, address }]
+
+5. Add different colored markers:
+      hospital → red marker
+      clinic → blue marker
+      pharmacy → green marker
+
+6. Add popup for each marker:
+      - name
+      - amenity type
+      - address
+
+7. Map styling:
+      width: 100%
+      height: 500px
+      border-radius: 12px
+      overflow: hidden
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1)
+
+==============================================
+CODE QUALITY REQUIREMENTS
+==============================================
+- Use TypeScript + React functional components.
+- Use useState + useEffect.
+- Include necessary comments explaining:
+      * how MapLibre works
+      * how tile layers work
+      * how markers are placed
+      * how user location is detected
+      * how backend fetch is handled
+      * how popups are created
+      * how cleanup works in useEffect
+- Add console.log() for debugging.
+
+==============================================
+DELIVERABLE
+==============================================
+Write ONLY the final code for:
+
+    src/components/MapView.tsx
+
+The code must be:
+- Production-ready
+- Clean
+- Fully functional
+- MapLibre only (no Mapbox anywhere)
+- With comments
+- No unused imports
+
+
+<---------------------------------------------------------------------------------------------------------------->
+<---------------------------------------------------------------------------------------------------------------->
+
+
+PROMPT — Build Citizen Chatbot Component (for Landing Page)
+Build a complete Citizen Chatbot component for my React + TypeScript frontend.
+
+This chatbot will be used on the Landing Page without login and must connect to my backend's Citizen AI endpoint:
+    POST /citizenai
+with body:
+    { "message": userMessage, "lat": number, "lon": number }
+
+==================================
+FEATURE REQUIREMENTS
+==================================
+1. Create a component:
+       src/components/CitizenChatbot.tsx
+
+2. Features:
+   - A text input where citizen types their health question
+   - A big “Ask” button
+   - Auto-fetch user's live GPS location (lat, lon) using navigator.geolocation
+   - Send message + lat + lon to backend citizen agent
+   - Show loading state while waiting for response
+   - Display AI response in a clean chat UI (bubbles or card)
+   - Full markdown support (headings, bullet points)
+   - Auto-scroll to latest message
+   - Add console.log for request + response debugging
+
+3. UI Requirements:
+   - Minimal, clean, modern UI
+   - White chat container card
+   - Grey background for page/parent
+   - Large heading: “Health Assistant”
+   - Input field with full width
+   - Button styled clearly
+   - Chat messages appear in a scrollable area with max-height: 300px
+
+4. Code Requirements:
+   - Use TypeScript
+   - Use React hooks: useState, useEffect, useRef
+   - Include clear comments explaining:
+        * geolocation logic  
+        * how request is sent  
+        * how messages are stored  
+        * how scrolling works  
+   - No external UI libraries
+   - Use axios
+
+5. Output:
+   - Only deliver the full code for:
+        src/components/CitizenChatbot.tsx
+
+==================================
+GENERATE THE FULL COMPONENT NOW
+==================================
+
+<---------------------------------------------------------------------------------------------------------------->
+<---------------------------------------------------------------------------------------------------------------->
+
+
+Remove ALL previous AI agent code.  
+Now build a completely new CITIZEN HEALTH AGENT using:
+
+- LangChain
+- ChatGoogleGenerativeAI
+- SystemMessage, HumanMessage, AIMessage
+- "gemini-2.5-flash" model
+- My Google Gemini API key from environment variables
+- Clean, modular architecture
+
+====================================================
+FOLDER STRUCTURE
+====================================================
+
+backend/
+    agents/
+        citizen_agent.py
+
+====================================================
+REQUIREMENTS
+====================================================
+
+1. Use the official LangChain Google Generative AI wrapper:
+       from langchain_google_genai import ChatGoogleGenerativeAI
+       from langchain.schema import SystemMessage, HumanMessage, AIMessage
+
+2. Load the model as:
+       model = ChatGoogleGenerativeAI(
+           model="gemini-2.0-flash",
+           api_key=os.getenv("GEMINI_API_KEY"),
+           temperature=0.7
+       )
+
+3. Create a function:
+       generate_citizen_response(user_message: str, weather: dict)
+
+   Weather object:
+       {
+           "temperature": 30.5,
+           "humidity": 70,
+           "description": "humid and cloudy"
+       }
+
+4. The agent must follow a structured, section-wise health advice framework based on weather and user symptoms:
+
+    SYSTEM PROMPT MUST INCLUDE BELOW:
+
+    - Make responses highly structured, section-wise:
+         🌤 Weather Impact  
+         🥗 Diet Plan  
+         🚫 Avoid These  
+         🌿 Ayurvedic Tips  
+         💧 Hydration Plan  
+         😴 Sleep Guidance  
+         👕 Clothing  
+         🚶 Outdoor Safety  
+         🧘 Mind & Body Wellness  
+         ❤️ Summary  
+
+    - Advice must be SPECIFIC (e.g., “eat warm moong dal khichdi”, “drink 250ml coconut water at 4 PM”).  
+    - Use bullet points only, no long paragraphs.  
+    - No medical diagnoses or medication suggestions.  
+    - If user mentions critical symptoms (chest pain, unconsciousness, severe breathing issues), return a short emergency block only, not full advice.
+
+5. Build a prompt using:
+     messages = [
+         SystemMessage(content="... rules + behavior ..."),
+         HumanMessage(content=f"User question: {user_message}\nWeather: {weather}")
+     ]
+
+6. Return ONLY model.invoke(messages).content  
+   No fallback logic, no exceptions hidden.
+
+7. Include print() debug logs for:
+     - "Citizen Agent: request received"
+     - "Citizen Agent: weather data"
+     - "Citizen Agent: model invoked successfully"
+     - errors if any
+
+8. Add clear, readable COMMENTS for:
+     - what the SystemMessage does
+     - how messages are passed to the model
+     - why we use LangChain structure
+     - how weather is integrated
+     - why bullet-point structure is enforced
+
+====================================================
+DELIVERABLE
+====================================================
+Write ONLY the final code for:
+
+backend/agents/citizen_agent.py
+
+Clean, production-ready, and error-free.
+
+<----------------------------------------------------------------------------------------------------------------><---------------------------------------------------------------------------------------------------------------->
+PROMPT — Add CitizenChatbot to Landing & Dashboard
+
+Integrate the CitizenChatbot component into BOTH:
+
+1. src/pages/LandingPage.tsx
+2. src/pages/CitizenDashboard.tsx
+
+=====================================================
+REQUIREMENTS
+=====================================================
+
+1. Import the chatbot component:
+      import CitizenChatbot from "../components/CitizenChatbot";
+
+2. LANDING PAGE:
+   - Place chatbot inside a clean white card.
+   - Show it below the main title and subtitle.
+   - Page styling:
+        background: #f5f5f5
+        padding: 40px
+        centered layout
+   - Card styling:
+        width: 100%
+        max-width: 600px
+        background: white
+        padding: 20px
+        borderRadius: 12
+        boxShadow: "0 4px 12px rgba(0,0,0,0.08)"
+
+3. CITIZEN DASHBOARD:
+   - Chatbot should appear **below the weather section** and **below the map**.
+   - Create a separate white card for the chatbot.
+   - Add heading: “Ask the Health Assistant”
+   - Same card styling as landing page.
+   - Dashboard layout:
+       grey background
+       padding: 30px
+       proper spacing between map and chatbot.
+
+4. Code must:
+   - Use React + TypeScript
+   - Include clear comments
+   - Keep layout clean and not scroll-heavy
+   - Use minimal inline styling
+   - Avoid unused imports
+
+5. Deliver ONLY the final updated code for:
+       src/pages/LandingPage.tsx
+       src/pages/CitizenDashboard.tsx
+
+=====================================================
+NOW GENERATE THE UPDATED PAGES.
+=====================================================
+
+
+
+
+PROMPT – TWO SEPARATE AGENTS (Landing + Citizen)
+I want to create TWO separate Gemini agents using LangChain:
+
+=============================================================
+AGENT 1: LANDING PAGE CHATBOT (Short & Sweet Wellness Guide)
+=============================================================
+
+Name: LandingAgent  
+Goal: Provide quick, friendly wellness advice to the public.
+
+Behavior Rules:
+1. If user says “hi / hello / hey / sup / who are you”:  
+     → Respond with warm greeting + ask how you can help.
+
+2. If user asks simple lifestyle queries:  
+     Example: “how to cure dark circles”, “how to reduce stress”,  
+     “what to eat at night”, “how to lose weight slightly”  
+     → Give SHORT 3–6 bullet-point tips only.  
+     → Simple & practical.  
+     → No long paragraphs.  
+     → No medical disclaimers.  
+     → No weather-based info.  
+     → Tone friendly and casual.
+
+3. If user asks: “give details”, “explain more”, “give full routine”  
+     → Expand into a detailed version.  
+     → Keep structure clear but not medical-style.
+
+4. Never generate heavy doctor-style sections here.
+
+5. NO emergency detection logic needed here.
+
+Output Format for LandingAgent:
+- Keep replies SHORT unless user specifically asks for details.
+- Use bullet points only.
+- Use emojis sparingly.
+- Keep tone warm and conversational.
+
+=============================================================
+AGENT 2: CITIZEN DASHBOARD HEALTH AGENT (Weather + Sections)
+=============================================================
+
+Name: CitizenAgent  
+Goal: Provide structured, weather-aware, symptom-aware health advice.
+
+Inputs:
+- user_message
+- weather: { temperature, humidity, description }
+
+Critical Symptom Rules:
+If message includes:
+  “chest pain”, “difficulty breathing”, “unconscious”, “bleeding”,  
+  “high fever”, “fainting”
+→ RETURN ONLY a small emergency block.  
+→ DO NOT generate the full health plan.
+
+Normal Output Structure (MANDATORY):
+1. 🌤 Weather Impact (3–5 bullet points)
+2. 🥗 Diet Plan (Breakfast, Lunch, Dinner, Snacks)
+3. 🚫 Avoid These Foods/Activities
+4. 🌿 Ayurvedic Tips (specific herbs, timing, method)
+5. 💧 Hydration Plan (exact ml + timing)
+6. 😴 Sleep Guidance
+7. 👕 Clothing Guidance (weather-based)
+8. 🚶 Outdoor Safety (timings + UV advice)
+9. 🧘 Mind & Body Wellness (breathing/yoga)
+10. ❤️ Summary (3–4 lines)
+
+Rules:
+- Use bullet points ONLY.
+- No long paragraphs.
+- Give EXACT foods, timings, herbs, quantities.
+- Weather MUST influence advice (hot/humid/cold/rainy).
+- Friendly but professional tone.
+- No medical diagnoses or prescriptions.
+
+=============================================================
+TECH REQUIREMENTS
+=============================================================
+- Use LangChain
+- ChatGoogleGenerativeAI model = "gemini-2.0-flash"
+- Use SystemMessage + HumanMessage pattern
+- Create two files:
+
+backend/agents/landing_agent.py  
+backend/agents/citizen_agent.py  
+
+Each must export a function:
+   generate_landing_response(message: str)
+   generate_citizen_response(message: str, weather: dict)
+
+Include console logs for debugging.
+
+=============================================================
+DELIVERABLE
+=============================================================
+Write ONLY the two agent files with correct imports:
+1. backend/agents/landing_agent.py
+2. backend/agents/citizen_agent.py
+
+
+PROMPT — CITIZEN DASHBOARD STRUCTURED CHATBOT UI
+I need to update my frontend chatbot component to correctly display the CITIZEN AGENT'S structured section-wise output.
+
+This chatbot is ONLY for:
+    src/pages/CitizenDashboard.tsx
+    src/components/CitizenChatbot.tsx
+
+========================================================
+GOAL
+========================================================
+Build a professional UI that displays the Citizen Health Agent’s FULL SECTION-WISE RESPONSE in a clean card layout.
+
+The output from backend is Markdown containing sections like:
+- 🌤 Weather Impact
+- 🥗 Diet Plan
+- 🚫 Avoid These
+- 🌿 Ayurvedic Tips
+- 💧 Hydration Plan
+- 😴 Sleep Guidance
+- 👕 Clothing
+- 🚶 Outdoor Safety
+- 🧘 Mind & Body Wellness
+- ❤️ Summary
+
+The frontend must render this EXACT FORMAT cleanly.
+
+========================================================
+FEATURE REQUIREMENTS
+========================================================
+
+1. Modify CitizenChatbot.tsx to:
+   - Render the AI response in a BEAUTIFUL UI card
+   - Parse markdown properly using a markdown library, like:
+         import ReactMarkdown from "react-markdown";
+         import remarkGfm from "remark-gfm";
+   - Render:
+        - Section headings larger
+        - Bullet points with spacing
+        - Emojis intact
+   - White card container with padding
+   - Scrollable area (max-height: 350px)
+
+2. CitizenChatbot must contain:
+   - Text input box (full width)
+   - Submit button
+   - Loading spinner or “Thinking...” message
+   - Chat history (user + agent messages)
+   - Clean modern spacing
+
+3. Styling:
+   - Background: #f5f5f5
+   - Chat card: white, borderRadius: 12, padding: 20, shadow
+   - Section spacing: 16px margin
+   - Headings bold & larger
+   - Bullet points aligned nicely
+   - Response should not appear as one big blob of text
+
+4. CitizenDashboard.tsx:
+   - Place chatbot inside its own white card BELOW:
+        - Weather card
+        - MapView
+   - Add a heading:
+         <h2>Ask Your Health Assistant</h2>
+   - Card styling:
+         width: 100%
+         maxWidth: 700px
+         background: white
+         padding: 24px
+         borderRadius: 12px
+         boxShadow: 0 4px 12px rgba(0,0,0,0.08)
+
+========================================================
+FUNCTIONAL REQUIREMENTS
+========================================================
+
+1. On submit:
+     POST /citizenai
+     body: { message, lat, lon }
+
+2. Handle errors gracefully:
+     If backend fails → show friendly error message
+
+3. Console logs:
+   - “CitizenChatbot: sending message”
+   - “CitizenChatbot: received AI response”
+   - “CitizenChatbot: location detected”
+
+4. Messages stored in state:
+     const [messages, setMessages] = useState<MessageType[]>([])
+
+MessageType:
+     { role: "user" | "assistant", content: string }
+
+5. Use ReactMarkdown to display detailed section-wise output.
+
+========================================================
+DELIVERABLE
+========================================================
+Write ONLY the updated code for:
+
+1. src/components/CitizenChatbot.tsx  
+2. src/pages/CitizenDashboard.tsx
+
+Both must be production-ready and support clean section-wise rendering of detailed health agent responses.
+
+<-------------------------------------------------------------------------------------------->
+<-------------------------------------------------------------------------------------------->
+
+
+LANDING PAGE CHATBOT PROMPT (Option C + Weather Logic + Severity Detection)
+I want you to implement a SEPARATE AI chatbot specifically for the Landing Page.  
+This MUST NOT affect the CitizenDashboard chatbot.  
+This Landing AI should use Gemini (via LangChain) and produce short, friendly, simple responses.
+
+=========================================================
+LANDING CHATBOT — PURPOSE
+=========================================================
+This bot gives:
+- Short, sweet, conversational health & wellness suggestions
+- Maximum 1–3 sentences
+- Casual and friendly tone
+- No long paragraphs
+- No headers, no bullets, no markdown
+
+It should help with:
+- Basic wellness tips
+- Sleep, stress, hydration, skincare
+- Light home remedies
+- Motivation & healthy habits
+
+=========================================================
+ADDITIONAL LOGIC REQUIRED
+=========================================================
+1. Weather-based advice:
+   Only give weather-related suggestions IF the user explicitly asks something related to:
+   - weather
+   - temperature
+   - heat
+   - cold
+   - humidity
+   - "today's climate"
+   - "is it safe to go outside"
+   Do NOT give weather tips on normal questions.
+
+2. Serious illness detection:
+   IF the user's message contains serious symptoms like:
+   - chest pain
+   - difficulty breathing
+   - confusion
+   - high fever
+   - severe bleeding
+   - fainting
+   - stroke symptoms
+   - heart attack signs
+   THEN reply in short form:
+   “Your symptoms sound serious. Please log in to get proper care and see nearby clinics.”
+
+   Keep it short. No long paragraphs.
+
+=========================================================
+TECHNICAL REQUIREMENTS
+=========================================================
+Backend:
+- Create new file:
+     backend/agents/landing_agent.py
+- Use:
+     from langchain_google_genai import ChatGoogleGenerativeAI
+     from langchain_core.messages import SystemMessage, HumanMessage
+- Model:
+     gemini-1.5-flash
+- Add logs:
+     "Landing AI request received"
+     "Calling Gemini Flash"
+     "Landing AI response generated"
+
+Endpoint:
+- Add POST /landingai
+- Body:
+     { "message": "text", "lat": number, "lon": number }
+- lat/lon only used IF user asks weather-related question.
+
+Frontend:
+- Update ONLY the Landing Page chatbot component.
+- Show a small bubble-style short reply.
+- DO NOT show long health sections.
+- DO NOT load CitizenDashboard’s agent here.
+
+=========================================================
+SYSTEM PROMPT FOR THE LANDING AGENT
+=========================================================
+Use this EXACT system prompt inside the agent:
+
+"You are a friendly wellness assistant for the Landing Page. 
+Keep all answers short, casual, and easy to understand—only 1 to 3 sentences. 
+Give simple guidance on sleep, skincare, hydration, stress, and general wellbeing. 
+If the user's question mentions weather or climate, you may add short weather-related advice.
+If their message sounds serious (e.g., chest pain, difficulty breathing, severe fever, fainting), 
+tell them politely in one short sentence to log in to get proper help and nearby clinic information.
+Do NOT generate long paragraphs, no sections, no lists, no headings, no markdown."
+
+=========================================================
+DELIVERABLES
+=========================================================
+Generate:
+1. backend/agents/landing_agent.py  
+2. POST /landingai in backend/app.py  
+3. Updated Landing chatbot component (React TypeScript)  
+4. Ensure no interference with CitizenDashboard chatbot.
+
+All code must be clean, minimal, production-ready, and error-free.
