@@ -1,11 +1,19 @@
-✅ 1. Requirements
+🚑 HealthAI — Setup & Installation Guide
 
+A complete guide to run the HealthAI Full Stack Application on any system.
+
+✅ 1. Requirements
 System Requirements
 
 Python 3.11+
+
+Node.js 18+
+
 Gemini API Key
-MongoDB API Key
-OPENWEATHER_API_KEY
+
+MongoDB Atlas API Key
+
+OPENWEATHER API Key
 
 📦 2. Create and Activate Virtual Environment
 Windows
@@ -20,9 +28,9 @@ source venv/bin/activate
 
 📥 3. Install Python Dependencies
 
-Make sure requirements.txt exists with if not requirement.txt avalaible in backend 
-folder create it 
+If requirements.txt is NOT available, create a new file named:
 
+requirements.txt
 fastapi
 uvicorn
 python-dotenv
@@ -32,9 +40,7 @@ langchain
 langchain-google-genai
 google-generativeai
 
-
-Then install:
-
+Install packages:
 pip install -r requirements.txt
 
 🔑 4. Add Environment Variables (.env)
@@ -44,19 +50,33 @@ Inside backend/.env create:
 MONGO_URI=your_mongo_connection_string
 DB_NAME=HealthAI
 GEMINI_API_KEY=your_gemini_api_key
+OPENWEATHER_API_KEY=your_openweather_api_key
 
 ▶️ 5. Run the Backend
-1.cd backend
-2.if venv not activate then paste this: venv\Scripts\activate
-3.uvicorn app:app --reload
+
+Go to backend folder
+
+cd backend
 
 
-Server runs at:
+If venv is NOT active:
+
+venv\Scripts\activate   # Windows
+# or
+source venv/bin/activate  # Mac/Linux
+
+
+Run backend:
+
+uvicorn app:app --reload
+
+
+Backend runs at:
 👉 http://127.0.0.1:8000
 
 💻 6. Setup and Run Frontend
 
-Open new terminal:
+Open a new terminal:
 
 cd frontend
 npm install
@@ -66,39 +86,36 @@ npm install leaflet react-leaflet
 npm install --save-dev @types/leaflet
 npm run dev
 
-React app runs at:
+
+Frontend runs at:
 👉 http://localhost:5173
 
 🧪 7. Features Working Out-of-the-Box
 
-🔐 Login / Signup
-
-🗺 Live location map (Leaflet)
-
-🧠 Gemini-powered health agent
-
-🌦 Weather-aware citizen advice
-
-💬 Landing page chatbot
-
-🏥 Citizen dashboard AI sections
-
-📡 MongoDB data storage
+✔️ Login / Signup
+✔️ Live location map (Leaflet)
+✔️ Gemini-powered health agent
+✔️ Weather-aware citizen advice
+✔️ Landing page chatbot
+✔️ Citizen dashboard AI sections
+✔️ MongoDB data storage
 
 ❗ Troubleshooting
-If backend fails because module not found:
+Backend: Module Not Found
 
 Run:
 
 pip install -r requirements.txt
 
-If frontend shows blank page:
+Frontend: Blank Page
 
 Run:
 
 npm install
 npm run dev
 
-If chat agent fails:
+Chat agent not working
 
-Check .env contains the correct Gemini key.
+Check .env → verify:
+
+GEMINI_API_KEY=correct_key
