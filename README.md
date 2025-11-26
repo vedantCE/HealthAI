@@ -6,7 +6,6 @@ This README explains how to run both **backend** and **frontend** of the HealthA
 
 ## ✅ 1. System Requirements
 - **Python 3.11+**
-- **Node.js 18+**
 - **MongoDB Connection URI**
 - **Gemini API Key**
 - **OpenWeather API Key (optional)**
